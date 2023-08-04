@@ -1,12 +1,21 @@
-# v2 supports multiple resources
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: nginx
   labels:
     app: nginx
-# TODO:
-# - Set target to nginx deployment
-# - Set minimum replicas to 1
-# - Set maximum replicas to 20
-# - Set target CPU utilization to 50%
+spec:
+  scaleTargetRef: # Set target to nginx deployment
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
+  minReplicas: 1 # Set minimum replicas to 1
+  maxReplicas: 20 # Set maximum replicas to 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Set target CPU utilization to 50%
+

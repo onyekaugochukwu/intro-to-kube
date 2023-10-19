@@ -1,9 +1,38 @@
 # NOTE: For these commands your current working directory should be: 
 # /workspaces/intro-to-kube/cyber-monday
 # TODO: Enter kubectl cp command used to get `log.sh` file into the Pod
-< ANSWER HERE >
+kubectl cp log.sh default/nginx-pod:/tmp/log.sh
 # TODO: Enter kubectl exec command used to execute the `log.sh`
-< ANSWER HERE >
+kubectl exec -it nginx-pod -- /bin/bash -c "bash /tmp/log.sh"
 # TODO: Enter kubectl cp command used to copy the log file from inside the
 # Pod to your current working directory
-< ANSWER HERE >
+kubectl cp nginx-pod:/tmp/foo.log /workspaces/intro-to-kube/cyber-monday/foo.log
+
+sample output
+{"item": "dual monitor stand", "user": 746, "date": "2023-10-19T18:21:53Z"}
+{"item": "smartphone", "user": 618, "date": "2023-10-19T18:21:53Z"}
+{"item": "digital hygrometer", "user": 868, "date": "2023-10-19T18:21:53Z"}
+{"item": "HDMI splitter", "user": 496, "date": "2023-10-19T18:21:53Z"}
+{"item": "Wacom tablet", "user": 932, "date": "2023-10-19T18:21:53Z"}
+{"item": "3D printer", "user": 21, "date": "2023-10-19T18:21:53Z"}
+
+
+kubectl get pods -l app=just-a-pod -o custom-columns=:metadata.name --no-headers
+copy_logs.sh file 
+---
+#!/bin/bash
+
+DEPLOYMENT_PODS=$(kubectl get pods -l app=just-a-pod -o custom-columns=:metadata.name --no-headers)
+
+for POD in $DEPLOYMENT_PODS; do
+  # Generate a unique prefix using the Pod name
+  PREFIX="${POD}_"
+  
+  # Copy the log file from each Pod to your local machine with the unique prefix
+  kubectl cp $POD:/tmp/foo.log /workspaces/intro-to-kube/cyber-monday/"$PREFIX"foo.log
+done
+---
+chmod +x copy_logs.sh
+./copy_logs.sh
+
+

@@ -1,6 +1,19 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: nginx-pod
-  # TODO: 
-  # - Add your nginx-pod spec with label `just-a-pod` and containerPort 80
+  name: nginx-deployment
+spec:
+  replicas: 3  # Set the number of replicas to 3
+  selector:
+    matchLabels:
+      app: just-a-pod  # Add a selector label
+  template:
+    metadata:
+      labels:
+        app: just-a-pod  # Label the Pods with the same selector label
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+          ports:
+            - containerPort: 80
